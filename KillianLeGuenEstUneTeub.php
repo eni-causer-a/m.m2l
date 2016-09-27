@@ -1,5 +1,5 @@
 <?php
 
-echo'zbeb zbeb';
+echo'zbeub zbeub';
 
 ?>
