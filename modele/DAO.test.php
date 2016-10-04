@@ -196,7 +196,7 @@ $niveauUtilisateur = $dao->getNiveauUtilisateur('guesdonm', 'passe');
 echo "NiveauUtilisateur de ('guesdonm', 'passe') : <b>" . $niveauUtilisateur . "</b></p>";
 
 
-/*
+
 // test de la méthode getReservation --------------------------------------------------------------
 // modifié par Jim le 25/9/2015
 echo "<h3>Test de getReservation : </h3>";
@@ -210,7 +210,7 @@ if ($laReservation)
 	echo "<p>La réservation 12 existe : <br>" . $laReservation->toString() . "</p>";
 else
 	echo "<p>La réservation 12 n'existe pas !</p>";	
-*/
+
 
 
 /*

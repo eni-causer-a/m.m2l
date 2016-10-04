@@ -306,6 +306,47 @@ class DAO
 			return "1";
 	}
 	
+	// getReservation
+	public function getReservation($idReservation)
+	{
+	
+	// on initialise $laReservation à 0 pour éviter l'affichage d'une erreur si aucune réservation n'est trouvée
+	$laReservation=0;
+		
+	// préparation de la requete de recherche
+	$txt_req = "Select mrbs_entry.id as id_entry, timestamp, start_time, end_time, room_name, status, digicode";
+	$txt_req = $txt_req . " from mrbs_entry, mrbs_room, mrbs_entry_digicode";
+	$txt_req = $txt_req . " where mrbs_entry.id = :idReservation";
+	$txt_req = $txt_req . " and mrbs_entry.room_id = mrbs_room.id";
+	$txt_req = $txt_req . " and mrbs_entry.id = mrbs_entry_digicode.id";
+	
+	$req = $this->cnx->prepare($txt_req);
+	// liaison de la requête et de ses paramètres
+	$req->bindValue("idReservation", $idReservation, PDO::PARAM_INT);
+	// extraction des données
+	$req->execute();
+	$resultat = $req->fetch(PDO::FETCH_OBJ);
+	
+	//on vérifie si un résultat est trouvé
+	if (1==1)
+	{
+		// création d'un objet Reservation
+		$unId = utf8_encode($resultat->id_entry);
+		$unTimeStamp = utf8_encode($resultat->timestamp);
+		$unStartTime = utf8_encode($resultat->start_time);
+		$unEndTime = utf8_encode($resultat->end_time);
+		$unRoomName = utf8_encode($resultat->room_name);
+		$unStatus = utf8_encode($resultat->status);
+		$unDigicode = utf8_encode($resultat->digicode);
+		$laReservation = new Reservation($unId, $unTimeStamp, $unStartTime, $unEndTime, $unRoomName, $unStatus, $unDigicode);
+	}
+	// libère les ressources du jeu de données
+	$req->closeCursor();
+	// fourniture de la réservation
+	return $laReservation;
+	}
+	
+	
 } // fin de la classe DAO
 
 // ATTENTION : on ne met pas de balise de fin de script pour ne pas prendre le risque
