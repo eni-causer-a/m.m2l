@@ -322,7 +322,7 @@ class DAO
 	
 	$req = $this->cnx->prepare($txt_req);
 	// liaison de la requête et de ses paramètres
-	$req->bindValue("idReservation", $idReservation, PDO::PARAM_STR);
+	$req->bindValue("idReservation", $idReservation, PDO::PARAM_INT);
 	// extraction des données
 	$req->execute();
 	$resultat = $req->fetch(PDO::FETCH_OBJ);
