@@ -383,6 +383,21 @@ class DAO
 		return $leUtilisateur;
 	}
 	
+	//modifierMdpUser
+	public function modifierMdpUser($nomUtilisateur,$mdpUtilisateur)
+	{
+		$txt_req = "Update mrbs_users
+					Set password = :mdpUtilisateur
+					Where name = :nomUtilisateur";
+		
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
+		$req->bindValue("mdpUtilisateur", $mdpUtilisateur, PDO::PARAM_STR);
+				// extraction des données
+		$req->execute();		
+		
+	}
 	
 } // fin de la classe DAO
 
