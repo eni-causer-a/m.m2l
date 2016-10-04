@@ -318,7 +318,7 @@ class DAO
 	$txt_req = $txt_req . " from mrbs_entry, mrbs_room, mrbs_entry_digicode";
 	$txt_req = $txt_req . " where mrbs_entry.id = :idReservation";
 	$txt_req = $txt_req . " and mrbs_entry.room_id = mrbs_room.id";
-	$txt_req = $txt_req . " and mrbs_entry.id = mrbs_entry_digicode.id";
+	$txt_req = $txt_req . " and mrbs_entry.id = mrbs_entry_digicode.id";	
 	
 	$req = $this->cnx->prepare($txt_req);
 	// liaison de la requête et de ses paramètres
