@@ -328,7 +328,7 @@ class DAO
 	$resultat = $req->fetch(PDO::FETCH_OBJ);
 	
 	//on vérifie si un résultat est trouvé
-	if (1==1)
+	if (!empty($resultat)==true)
 	{
 		// création d'un objet Reservation
 		$unId = utf8_encode($resultat->id_entry);
