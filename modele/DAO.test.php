@@ -20,7 +20,6 @@ include_once ('DAO.class.php');
 $dao = new DAO();
 
 
-/*
 // test de la méthode annulerReservation --------------------------------------------------------
 // pour ce test, utiliser une réservation existante
 // modifié par Jim le 28/9/2015
@@ -36,7 +35,6 @@ if ($laReservation) {
 }
 else
 	echo "<p>La réservation 1 n'existe pas !</p>";
-*/
 
 
 /*
