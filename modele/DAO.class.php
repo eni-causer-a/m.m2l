@@ -346,6 +346,43 @@ class DAO
 	return $laReservation;
 	}
 	
+	// getUtilisateur
+	public function getUtilisateur($nomUtilisateur)
+	{
+	
+		// on initialise $leUtilisateur à 0 pour éviter l'affichage d'une erreur si aucune réservation n'est trouvée
+		$leUtilisateur=0;
+	
+		// préparation de la requete de recherche
+		$txt_req = "Select id, level, name, password, email";
+		$txt_req = $txt_req . " from mrbs_users";
+		$txt_req = $txt_req . " where name = :nomUtilisateur";
+	
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
+		// extraction des données
+		$req->execute();
+		$resultat = $req->fetch(PDO::FETCH_OBJ);
+	
+		//on vérifie si un résultat est trouvé
+		if (!empty($resultat)==true)
+		{
+			// création d'un objet Reservation
+			$unId = utf8_encode($resultat->id);
+			$unLevel = utf8_encode($resultat->level);
+			$unName = utf8_encode($resultat->name);
+			$unPassword = utf8_encode($resultat->password);
+			$unEmail = utf8_encode($resultat->email);
+				
+			$leUtilisateur = new Utilisateur($unId, $unLevel, $unName, $unPassword, $unEmail);
+		}
+		// libère les ressources du jeu de données
+		$req->closeCursor();
+		// fourniture de la réservation
+		return $leUtilisateur;
+	}
+	
 	
 } // fin de la classe DAO
 
