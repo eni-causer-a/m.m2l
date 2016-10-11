@@ -344,40 +344,6 @@ class DAO
 		// fourniture de la réponse
 		return $reponse;
 	}	
-
-	// teste si le digicode saisi ($digicodeSaisi) correspond bien à une réservation
-	// de la salle indiquée ($idSalle) pour l'heure courante
-	// fournit la valeur 0 si le digicode n'est pas bon, 1 si le digicode est bon
-	// modifié par Jim le 18/5/2015
-	public function testerDigicodeSalle($idSalle, $digicodeSaisi)
-	{	global $DELAI_DIGICODE;
-		// préparation de la requete de recherche
-		$txt_req = "Select count(*)";
-		$txt_req = $txt_req . " from mrbs_entry, mrbs_entry_digicode";
-		$txt_req = $txt_req . " where mrbs_entry.id = mrbs_entry_digicode.id";
-		$txt_req = $txt_req . " and room_id = :idSalle";
-		$txt_req = $txt_req . " and digicode = :digicodeSaisi";
-		$txt_req = $txt_req . " and (start_time - :delaiDigicode) < " . time();
-		$txt_req = $txt_req . " and (end_time + :delaiDigicode) > " . time();
-		
-		$req = $this->cnx->prepare($txt_req);
-		// liaison de la requête et de ses paramètres
-		$req->bindValue("idSalle", $idSalle, PDO::PARAM_STR);
-		$req->bindValue("digicodeSaisi", $digicodeSaisi, PDO::PARAM_STR);	
-		$req->bindValue("delaiDigicode", $DELAI_DIGICODE, PDO::PARAM_INT);	
-				
-		// exécution de la requete
-		$req->execute();
-		$nbReponses = $req->fetchColumn(0);
-		// libère les ressources du jeu de données
-		$req->closeCursor();
-		
-		// fourniture de la réponse
-		if ($nbReponses == 0)
-			return "0";
-		else
-			return "1";
-	}
 	
 	// getReservation
 	public function getReservation($idReservation)
@@ -498,6 +464,35 @@ class DAO
 		}
 		else 
 		{return false;}
+	}
+	
+	public function testerDigicodeSalle($idSalle, $digicodeSaisi)
+	{	global $DELAI_DIGICODE;
+	// préparation de la requete de recherche
+	$txt_req = "Select count(*) from mrbs_entry, mrbs_entry_digicode
+				where mrbs_entry.id = mrbs_entry_digicode.id
+				and room_id = :idSalle
+				and digicode = :digicodeSaisi
+				and (start_time - :delaiDigicode) < " . time() . "
+				and (end_time + :delaiDigicode) > " . time();
+	
+	$req = $this->cnx->prepare($txt_req);
+	// liaison de la requête et de ses paramètres
+	$req->bindValue("idSalle", $idSalle, PDO::PARAM_STR);
+	$req->bindValue("digicodeSaisi", $digicodeSaisi, PDO::PARAM_STR);
+	$req->bindValue("delaiDigicode", $DELAI_DIGICODE, PDO::PARAM_INT);
+	
+	// exécution de la requete
+	$req->execute();
+	$nbReponses = $req->fetchColumn(0);
+	// libère les ressources du jeu de données
+	$req->closeCursor();
+	
+	// fourniture de la réponse
+	if ($nbReponses == 0)
+		return "0";
+		else
+			return "1";
 	}
 	
 } // fin de la classe DAO
