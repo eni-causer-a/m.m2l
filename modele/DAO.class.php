@@ -447,19 +447,31 @@ class DAO
 	}
 	
 	//supprimerUtilisateur
-	public function modifierMdpUser($nomUtilisateur)
+	public function supprimerUtilisateur($nomUtilisateur)
 	{
+		$txt_req_check =	"Select id from mrbs_users
+							Where name = :nomUtilisateur";
+		$req = $this->cnx->prepare($txt_req_check);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
+		// extraction des données	
+		$req->execute();
+		$ok = $req->fetch(PDO::FETCH_OBJ);
+		
+		if ($ok)
+		{
 		$txt_req = "Delete from mrbs_users
-					Set password = :mdpUtilisateur
 					Where name = :nomUtilisateur";
 	
 		$req = $this->cnx->prepare($txt_req);
 		// liaison de la requête et de ses paramètres
 		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
-		$req->bindValue("mdpUtilisateur", $mdpUtilisateur, PDO::PARAM_STR);
 		// extraction des données
-		$req->execute();
-	
+		
+		return true;
+		}
+		else 
+		{return false;}
 	}
 	
 } // fin de la classe DAO
