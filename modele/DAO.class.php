@@ -171,7 +171,27 @@ class DAO
 		$ok = $req->execute();
 		return $ok;
 	}
-
+	
+	public function estLeCreateur($nomUser,$id)
+	{	// préparation de la requete de recherche
+	$txt_req = "Select id from mrbs_entry where id = :id and create_by = :nomUser";
+	$req = $this->cnx->prepare($txt_req);
+	// liaison de la requête et de ses paramètres
+	$req->bindValue("nomUser", $nomUser, PDO::PARAM_STR);
+	$req->bindValue("id", $id, PDO::PARAM_INT);
+		// exécution de la requete
+	$req->execute();
+	$nbReponses = $req->fetchColumn(0);
+	// libère les ressources du jeu de données
+	$req->closeCursor();
+	
+	// fourniture de la réponse
+	if ($nbReponses == 0)
+		return false;
+		else
+			return true;
+	}
+	
 	// fournit true si l'utilisateur ($nomUser) existe, false sinon
 	// modifié par Jim le 5/5/2015
 	public function existeUtilisateur($nomUser)
@@ -412,16 +432,14 @@ class DAO
 	}
 	
 	//supprimerUtilisateur
-	public function modifierMdpUser($nomUtilisateur)
+	public function supprimerUtilisateur($nomUtilisateur)
 	{
 		$txt_req = "Delete from mrbs_users
-					Set password = :mdpUtilisateur
 					Where name = :nomUtilisateur";
 	
 		$req = $this->cnx->prepare($txt_req);
 		// liaison de la requête et de ses paramètres
 		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
-		$req->bindValue("mdpUtilisateur", $mdpUtilisateur, PDO::PARAM_STR);
 		// extraction des données
 		$req->execute();
 	
