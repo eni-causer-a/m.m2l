@@ -88,17 +88,6 @@ class DAO
 		return $ok;
 	}
 
-	public function aPasseDesReservations($nom )
-	{
-		$txt_req= "SELECT * FROM mrbs_users,mrbs_entry where mrbs_users.name =:nom and create_by=:nom";
-		$req = $this->cnx->prepare($txt_req);
-		$req = $this->cnx->prepare($txt_req);
-		// liaison de la requête et de ses paramètres
-		$req->bindValue("nom", $nom, PDO::PARAM_STR);
-		$ok = $req->execute();
-		return $ok;
-	}
-	
 	// mise à jour de la table mrbs_entry_digicode (si besoin) pour créer les digicodes manquants
 	// cette fonction peut dépanner en cas d'absence des triggers chargés de créer les digicodes
 	// modifié par Jim le 5/5/2015
@@ -268,41 +257,6 @@ class DAO
 		return $lesReservations;
 	}
 	
-	public function getLesSalles()
-	{	// préparation de la requete de recherche
-		$txt_req = "SELECT mrbs_room.id,mrbs_room.room_name,mrbs_room.capacity,mrbs_area.area_name";
-		$txt_req = $txt_req . " FROM mrbs_room,mrbs_area,mrbs_entry";
-		$txt_req = $txt_req . " WHERE mrbs_room.area_id = mrbs_area.id";
-		$txt_req = $txt_req . " AND mrbs_room.id NOT IN (SELECT id FROM mrbs_entry)";
-		$txt_req = $txt_req . " GROUP BY mrbs_room.id;";
-		
-		$req = $this->cnx->query($txt_req);
-		// liaison de la requête et de ses paramètres
-		// extraction des données
-		$req->execute();
-		$uneLigne = $req->fetch(PDO::FETCH_OBJ);
-		
-		// construction d'une collection d'objets Reservation
-		$lesSalles = array();
-		// tant qu'une ligne est trouvée :
-		while ($uneLigne)
-		{	// création d'un objet Reservation
-			$unId = utf8_encode($uneLigne->id);
-			$unRoomName = utf8_encode($uneLigne->room_name);
-			$unCapacity = utf8_encode($uneLigne->capacity);
-			$unAreaName = utf8_encode($uneLigne->area_name);
-			
-			$uneSalle = new Salle($unId,$unRoomName, $unCapacity, $unAreaName);
-			// ajout de la réservation à la collection
-			$lesSalles[] = $uneSalle;
-			// extrait la ligne suivante
-			$uneLigne = $req->fetch(PDO::FETCH_OBJ);
-		}
-		// libère les ressources du jeu de données
-		$req->closeCursor();
-		// fourniture de la collection
-		return $lesSalles;
-	}
 
 	// fournit le niveau d'un utilisateur identifié par $nomUser et $mdpUser
 	// renvoie "utilisateur" ou "administrateur" si authentification correcte, "inconnu" sinon
@@ -458,50 +412,19 @@ class DAO
 	}
 	
 	//supprimerUtilisateur
-	public function supprimerUtilisateur($nomUtilisateur)
+	public function modifierMdpUser($nomUtilisateur)
 	{
-		$txt_req_check =	"Select id from mrbs_users
-							Where name = :nomUtilisateur";
-		$req = $this->cnx->prepare($txt_req_check);
-		// liaison de la requête et de ses paramètres
-		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
-		// extraction des données	
-		$req->execute();
-		$ok = $req->fetch(PDO::FETCH_OBJ);
-		
-		if ($ok)
-		{
 		$txt_req = "Delete from mrbs_users
+					Set password = :mdpUtilisateur
 					Where name = :nomUtilisateur";
 	
 		$req = $this->cnx->prepare($txt_req);
 		// liaison de la requête et de ses paramètres
 		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
+		$req->bindValue("mdpUtilisateur", $mdpUtilisateur, PDO::PARAM_STR);
 		// extraction des données
-		
-		return true;
-		}
-		else 
-		{return false;}
-	}
-	
-	public function existeReservation($idReservation)
-	{	// préparation de la requete de recherche
-		$txt_req = "Select id from mrbs_entry where id = :idReservation";
-		$req = $this->cnx->prepare($txt_req);
-		// liaison de la requête et de ses paramètres
-		$req->bindValue("idReservation", $idReservation, PDO::PARAM_STR);
-		// exécution de la requete
 		$req->execute();
-		$existeRes = $req->fetchColumn(0);
-		// libère les ressources du jeu de données
-		$req->closeCursor();
-		
-		// fourniture de la réponse
-		if ($existeRes == 0)
-			return false;
-		else 
-			return true;
+	
 	}
 	
 } // fin de la classe DAO
