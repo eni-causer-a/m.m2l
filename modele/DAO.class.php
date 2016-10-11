@@ -487,20 +487,20 @@ class DAO
 	
 	public function existeReservation($idReservation)
 	{	// préparation de la requete de recherche
-	$txt_req = "Select id from mrbs_entry where id = :idReservation";
-	$req = $this->cnx->prepare($txt_req);
-	// liaison de la requête et de ses paramètres
-	$req->bindValue("idReservation", $idReservation, PDO::PARAM_STR);
-	// exécution de la requete
-	$req->execute();
-	$existeRes = $req->fetchColumn(0);
-	// libère les ressources du jeu de données
-	$req->closeCursor();
-	
-	// fourniture de la réponse
-	if ($existeRes == 0)
-		return false;
-		else
+		$txt_req = "Select id from mrbs_entry where id = :idReservation";
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("idReservation", $idReservation, PDO::PARAM_STR);
+		// exécution de la requete
+		$req->execute();
+		$existeRes = $req->fetchColumn(0);
+		// libère les ressources du jeu de données
+		$req->closeCursor();
+		
+		// fourniture de la réponse
+		if ($existeRes == 0)
+			return false;
+		else 
 			return true;
 	}
 	
