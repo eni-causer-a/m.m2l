@@ -399,6 +399,22 @@ class DAO
 		
 	}
 	
+	//supprimerUtilisateur
+	public function modifierMdpUser($nomUtilisateur)
+	{
+		$txt_req = "Delete from mrbs_users
+					Set password = :mdpUtilisateur
+					Where name = :nomUtilisateur";
+	
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
+		$req->bindValue("mdpUtilisateur", $mdpUtilisateur, PDO::PARAM_STR);
+		// extraction des données
+		$req->execute();
+	
+	}
+	
 } // fin de la classe DAO
 
 // ATTENTION : on ne met pas de balise de fin de script pour ne pas prendre le risque
