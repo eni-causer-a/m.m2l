@@ -88,6 +88,17 @@ class DAO
 		return $ok;
 	}
 
+	public function aPasseDesReservations($nom )
+	{
+		$txt_req= "SELECT * FROM mrbs_users,mrbs_entry where mrbs_users.name =:nom and create_by=:nom";
+		$req = $this->cnx->prepare($txt_req);
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("nom", $nom, PDO::PARAM_STR);
+		$ok = $req->execute();
+		return $ok;
+	}
+	
 	// mise à jour de la table mrbs_entry_digicode (si besoin) pour créer les digicodes manquants
 	// cette fonction peut dépanner en cas d'absence des triggers chargés de créer les digicodes
 	// modifié par Jim le 5/5/2015
