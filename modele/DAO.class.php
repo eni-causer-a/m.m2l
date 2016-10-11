@@ -256,6 +256,42 @@ class DAO
 		// fourniture de la collection
 		return $lesReservations;
 	}
+	
+	public function getLesSalles()
+	{	// préparation de la requete de recherche
+		$txt_req = "SELECT mrbs_room.id,mrbs_room.room_name,mrbs_room.capacity,mrbs_area.area_name";
+		$txt_req = $txt_req . " FROM mrbs_room,mrbs_area,mrbs_entry";
+		$txt_req = $txt_req . " WHERE mrbs_room.area_id = mrbs_area.id";
+		$txt_req = $txt_req . " AND mrbs_room.id NOT IN (SELECT id FROM mrbs_entry)";
+		$txt_req = $txt_req . " GROUP BY mrbs_room.id;";
+		
+		$req = $this->cnx->query($txt_req);
+		// liaison de la requête et de ses paramètres
+		// extraction des données
+		$req->execute();
+		$uneLigne = $req->fetch(PDO::FETCH_OBJ);
+		
+		// construction d'une collection d'objets Reservation
+		$lesSalles = array();
+		// tant qu'une ligne est trouvée :
+		while ($uneLigne)
+		{	// création d'un objet Reservation
+			$unId = utf8_encode($uneLigne->id);
+			$unRoomName = utf8_encode($uneLigne->room_name);
+			$unCapacity = utf8_encode($uneLigne->capacity);
+			$unAreaName = utf8_encode($uneLigne->area_name);
+			
+			$uneSalle = new Salle($unId,$unRoomName, $unCapacity, $unAreaName);
+			// ajout de la réservation à la collection
+			$lesSalles[] = $uneSalle;
+			// extrait la ligne suivante
+			$uneLigne = $req->fetch(PDO::FETCH_OBJ);
+		}
+		// libère les ressources du jeu de données
+		$req->closeCursor();
+		// fourniture de la collection
+		return $lesSalles;
+	}
 
 	// fournit le niveau d'un utilisateur identifié par $nomUser et $mdpUser
 	// renvoie "utilisateur" ou "administrateur" si authentification correcte, "inconnu" sinon
