@@ -37,7 +37,7 @@ else
 	echo "<p>La réservation 1 n'existe pas !</p>";
 
 
-/*
+
 // test de la méthode aPasseDesReservations -------------------------------------------------------
 // pour ce test, choisir un utilisateur avec des réservations et un autre sans réservation
 // modifié par Jim le 28/9/2015
@@ -52,7 +52,7 @@ if ($ok)
 	echo "jim a bien passé des réservations !</p>";
 else
 	echo "jim n'a pas passé de réservations !</p>";
-*/
+
 
 
 /*
