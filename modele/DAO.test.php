@@ -80,7 +80,7 @@ echo "<p>Pour ce test, videz auparavant la table <b>mrbs_entry_digicode</b><br>"
 echo " puis vérifiez que la table est reconstruite après exécution du test.</p>";
 
 
-/*
+
 // test de la méthode creerUtilisateur ------------------------------------------------------------
 // modifié par Jim le 25/5/2016
 echo "<h3>Test de creerUtilisateur : </h3>";
@@ -90,7 +90,7 @@ if ($ok)
 	echo "<p>Utilisateur bien enregistré !</p>";
 else
 	echo "<p>Echec lors de l'enregistrement de l'utilisateur !</p>";
-*/
+
 
 
 /*
@@ -211,7 +211,7 @@ else
 
 
 
-/*
+
 // test de la méthode getUtilisateur --------------------------------------------------------------
 // modifié par Jim le 30/9/2015
 echo "<h3>Test de getUtilisateur : </h3>";
@@ -225,10 +225,10 @@ if ($unUtilisateur)
 	echo "<p>L'utilisateur admon existe : <br>" . $unUtilisateur->toString() . "</p>";
 else
 	echo "<p>L'utilisateur admon n'existe pas !</p>";
-*/
 
 
-/*
+
+
 // test de la méthode modifierMdpUser -------------------------------------------------------------
 // modifié par Jim le 28/9/2015
 echo "<h3>Test de modifierMdpUser : </h3>";
@@ -247,10 +247,10 @@ if ($unUtilisateur) {
 }
 else
 	echo "<p>L'utilisateur admin n'existe pas !</p>";
-*/
 
 
-/*
+
+
 // test de la méthode supprimerUtilisateur --------------------------------------------------------
 // modifié par Jim le 28/9/2015
 echo "<h3>Test de supprimerUtilisateur : </h3>";
@@ -259,7 +259,7 @@ if ($ok)
  	echo "<p>Utilisateur bien supprimé !</p>";
 else
 	echo "<p>Echec lors de la suppression de l'utilisateur !</p>";
-*/
+
 
 
 /*
