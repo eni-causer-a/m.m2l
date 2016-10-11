@@ -427,6 +427,30 @@ class DAO
 	
 	}
 	
+	public function testerDigicodeBatiment($digicode)
+	{
+		$txt_req = "Select mrbs_area.id as id_batiment, mrbs_area.area_name as nom_batiment From mrbs_area, mrbs_room, mrbs_entry, mrbs_entry_digicode
+					Where mrbs_entry_digicode.digicode = :digicode
+					And mrbs_entry.id = mrbs_entry_digicode.id
+					And mrbs_room.id = mrbs_entry.room_id
+					And mrbs_area.id = mrbs_room.area_id";
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("digicode", $digicode, PDO::PARAM_STR);
+		// extraction des données
+		$req->execute();
+		$res = $req->fetch(PDO::FETCH_OBJ);
+	
+		if ($res)
+		{
+			return $res->nom_batiment;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 } // fin de la classe DAO
 
 // ATTENTION : on ne met pas de balise de fin de script pour ne pas prendre le risque
