@@ -107,7 +107,7 @@ class DAO
 		$uneLigne = $req->fetch(PDO::FETCH_OBJ);
 		if ($uneLigne)
 		{
-			
+			// possibilité de faire  if $uneLigne->statut = 4
 			$txt_req = "UPDATE mrbs_entry SET status ='0' WHERE id = :id";
 			$req = $this->cnx->prepare($txt_req);
 			$req->bindValue("id", $idReservation, PDO::PARAM_INT);
