@@ -75,7 +75,18 @@ class DAO
 	// -------------------------------------- Méthodes d'instances ------------------------------------------
 	// ------------------------------------------------------------------------------------------------------
 
-
+	public function annulerReservation($idReservation)
+	{	// préparation de la requete de suppression
+		$txt_req = "DELETE FROM mrbs_entry WHERE id=:idReservation";		
+		
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("idReservation", $idReservation, PDO::PARAM_STR);
+		
+		// extraction des données
+		$ok = $req->execute();
+		return $ok;
+	}
 
 	// mise à jour de la table mrbs_entry_digicode (si besoin) pour créer les digicodes manquants
 	// cette fonction peut dépanner en cas d'absence des triggers chargés de créer les digicodes
