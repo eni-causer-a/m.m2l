@@ -88,17 +88,6 @@ class DAO
 		return $ok;
 	}
 
-	public function aPasseDesReservations($nom )
-	{
-		$txt_req= "SELECT * FROM mrbs_users,mrbs_entry where mrbs_users.name =:nom and create_by=:nom";
-		$req = $this->cnx->prepare($txt_req);
-		$req = $this->cnx->prepare($txt_req);
-		// liaison de la requête et de ses paramètres
-		$req->bindValue("nom", $nom, PDO::PARAM_STR);
-		$ok = $req->execute();
-		return $ok;
-	}
-	
 	// mise à jour de la table mrbs_entry_digicode (si besoin) pour créer les digicodes manquants
 	// cette fonction peut dépanner en cas d'absence des triggers chargés de créer les digicodes
 	// modifié par Jim le 5/5/2015
@@ -266,42 +255,6 @@ class DAO
 		$req->closeCursor();
 		// fourniture de la collection
 		return $lesReservations;
-	}
-	
-	public function getLesSalles()
-	{	// préparation de la requete de recherche
-		$txt_req = "SELECT mrbs_room.id,mrbs_room.room_name,mrbs_room.capacity,mrbs_area.area_name";
-		$txt_req = $txt_req . " FROM mrbs_room,mrbs_area,mrbs_entry";
-		$txt_req = $txt_req . " WHERE mrbs_room.area_id = mrbs_area.id";
-		$txt_req = $txt_req . " AND mrbs_room.id NOT IN (SELECT id FROM mrbs_entry)";
-		$txt_req = $txt_req . " GROUP BY mrbs_room.id;";
-		
-		$req = $this->cnx->query($txt_req);
-		// liaison de la requête et de ses paramètres
-		// extraction des données
-		$req->execute();
-		$uneLigne = $req->fetch(PDO::FETCH_OBJ);
-		
-		// construction d'une collection d'objets Reservation
-		$lesSalles = array();
-		// tant qu'une ligne est trouvée :
-		while ($uneLigne)
-		{	// création d'un objet Reservation
-			$unId = utf8_encode($uneLigne->id);
-			$unRoomName = utf8_encode($uneLigne->room_name);
-			$unCapacity = utf8_encode($uneLigne->capacity);
-			$unAreaName = utf8_encode($uneLigne->area_name);
-			
-			$uneSalle = new Salle($unId,$unRoomName, $unCapacity, $unAreaName);
-			// ajout de la réservation à la collection
-			$lesSalles[] = $uneSalle;
-			// extrait la ligne suivante
-			$uneLigne = $req->fetch(PDO::FETCH_OBJ);
-		}
-		// libère les ressources du jeu de données
-		$req->closeCursor();
-		// fourniture de la collection
-		return $lesSalles;
 	}
 
 	// fournit le niveau d'un utilisateur identifié par $nomUser et $mdpUser
@@ -485,6 +438,31 @@ class DAO
 		{return false;}
 	}
 	
+	public function testerDigicodeBatiment($digicode)
+	{
+		$txt_req = "Select mrbs_area.id as id_batiment, mrbs_area.area_name as nom_batiment From mrbs_area, mrbs_room, mrbs_entry, mrbs_entry_digicode
+					Where mrbs_entry_digicode.digicode = :digicode
+					And mrbs_entry.id = mrbs_entry_digicode.id
+					And mrbs_room.id = mrbs_entry.room_id
+					And mrbs_area.id = mrbs_room.area_id";
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("digicode", $digicode, PDO::PARAM_STR);
+		// extraction des données	
+		$req->execute();
+		$res = $req->fetch(PDO::FETCH_OBJ);
+		
+		if ($res)
+		{
+			return $res->nom_batiment;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+
 } // fin de la classe DAO
 
 // ATTENTION : on ne met pas de balise de fin de script pour ne pas prendre le risque
