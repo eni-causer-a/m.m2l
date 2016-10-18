@@ -15,7 +15,7 @@
 			// associe une fonction à l'événement pageinit
 			$(document).bind('pageinit', function() {
 				<?php if ($typeMessage != '') { ?>
-					// affiche la boîte de dialogue 'affichage_message'
+					// affiche la boîte de dialogue 'affichage_message' 
 					$.mobile.changePage('#affichage_message', {transition: "<?php echo $transition; ?>"});
 				<?php } ?>
 			} );
