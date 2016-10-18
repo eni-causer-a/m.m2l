@@ -210,7 +210,7 @@ class DAO
 	$nbReponses = $req->fetchColumn(0);
 	// libère les ressources du jeu de données
 	$req->closeCursor();
-	// cacahuète
+	
 	// fourniture de la réponse
 	if ($nbReponses == 0)
 		return false;
