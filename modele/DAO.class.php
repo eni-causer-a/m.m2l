@@ -198,6 +198,26 @@ class DAO
 		return $ok;
 	}
 
+	public function estLeCreateur($nomUser,$idReservation)
+	{	// préparation de la requete de recherche
+	$txt_req = "Select count(*) from mrbs_entry where create_by = :nomUser AND id = :idReservation";
+	$req = $this->cnx->prepare($txt_req);
+	// liaison de la requête et de ses paramètres
+	$req->bindValue("nomUser", $nomUser, PDO::PARAM_STR);
+	$req->bindValue("idReservation", $idReservation, PDO::PARAM_STR);
+	// exécution de la requete
+	$req->execute();
+	$nbReponses = $req->fetchColumn(0);
+	// libère les ressources du jeu de données
+	$req->closeCursor();
+	
+	// fourniture de la réponse
+	if ($nbReponses == 0)
+		return false;
+		else
+			return true;
+	}
+	
 	// fournit true si l'utilisateur ($nomUser) existe, false sinon
 	// modifié par Jim le 5/5/2015
 	public function existeUtilisateur($nomUser)
