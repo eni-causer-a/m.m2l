@@ -22,7 +22,7 @@ $dao = new DAO();
 
 // test de la méthode annulerReservation --------------------------------------------------------
 // pour ce test, utiliser une réservation existante
-// modifié par Jim le 28/9/2015
+// modifié par Jim le 28/9/2015/*
 echo "<h3>Test de annulerReservation : </h3>";
 $laReservation = $dao->getReservation("1");
 if ($laReservation) {
@@ -37,7 +37,7 @@ else
 	echo "<p>La réservation 1 n'existe pas !</p>";
 
 
-
+/*
 // test de la méthode aPasseDesReservations -------------------------------------------------------
 // pour ce test, choisir un utilisateur avec des réservations et un autre sans réservation
 // modifié par Jim le 28/9/2015
@@ -52,7 +52,7 @@ if ($ok)
 	echo "jim a bien passé des réservations !</p>";
 else
 	echo "jim n'a pas passé de réservations !</p>";
-
+*/
 
 
 /*
@@ -106,7 +106,7 @@ else
 */
 
 
-/*
+
 // test de la méthode estLeCreateur ---------------------------------------------------------------
 // modifié par Jim le 25/9/2015
 echo "<h3>Test de estLeCreateur : </h3>";
@@ -114,10 +114,10 @@ if ($dao->estLeCreateur("admin", "11")) $estLeCreateur = "oui"; else $estLeCreat
 echo "<p>'admin' a créé la réservation 11 : <b>" . $estLeCreateur . "</b><br>";
 if ($dao->estLeCreateur("zenelsy", "11")) $estLeCreateur = "oui"; else $estLeCreateur = "non";
 echo "'zenelsy' a créé la réservation 11 : <b>" . $estLeCreateur . "</b></p>";
-*/
 
 
-/*
+
+
 // test de la méthode existeReservation -----------------------------------------------------------
 // modifié par Jim le 25/9/2015
 echo "<h3>Test de existeReservation : </h3>";
@@ -125,7 +125,7 @@ if ($dao->existeReservation("11")) $existe = "oui"; else $existe = "non";
 echo "<p>Existence de la réservation 11 : <b>" . $existe . "</b><br>";
 if ($dao->existeReservation("12")) $existe = "oui"; else $existe = "non";
 echo "Existence de la réservation 12 : <b>" . $existe . "</b></p>";
-*/
+
 
 
 // test de la méthode existeUtilisateur -----------------------------------------------------------
@@ -145,7 +145,7 @@ echo "Un digicode aléatoire : <b>" . $dao->genererUnDigicode() . "</b><br>";
 echo "Un digicode aléatoire : <b>" . $dao->genererUnDigicode() . "</b><p>";
 
 
-/*
+
 // test de la méthode getLesReservations ----------------------------------------------------------
 // modifié par Jim le 25/5/2016
 echo "<h3>Test de getLesReservations : </h3>";
@@ -165,10 +165,10 @@ foreach ($lesReservations as $uneReservation)
 {	echo ($uneReservation->toString());
 	echo ('<br>');
 }
-*/
 
 
-/*
+
+
 // test de la méthode getLesSalles ----------------------------------------------------------------
 // modifié par Jim le 26/5/2016
 echo "<h3>Test de getLesSalles : </h3>";
@@ -180,7 +180,7 @@ foreach ($lesSalles as $uneSalle)
 {	echo ($uneSalle->getRoom_name());
 	echo ('<br>');
 }
-*/
+
 
 
 // test de la méthode getNiveauUtilisateur --------------------------------------------------------
@@ -262,22 +262,22 @@ else
 
 
 
-/*
+
 // test de la méthode testerDigicodeBatiment ------------------------------------------------------
 // modifié par Jim le 28/9/2015
 echo "<h3>Test de testerDigicodeBatiment : </h3>";
 $reponse = $dao->testerDigicodeBatiment("34214E");
 echo "<p>L'appel de testerDigicodeBatiment('34214E') donne : <b>" . $reponse . "</b><br>";
-*/
 
 
-/*
+
+
 // test de la méthode testerDigicodeSalle ---------------------------------------------------------
 // modifié par Jim le 28/9/2015
 echo "<h3>Test de testerDigicodeSalle : </h3>";
-$reponse = $dao->testerDigicodeSalle("15", "410EE4");
-echo "<p>L'appel de testerDigicodeSalle('15', '410EE4') donne : <b>" . $reponse . "</b><br>";
-*/
+$reponse = $dao->testerDigicodeSalle("15", "34214E");
+echo "<p>L'appel de testerDigicodeSalle('15', '34214E') donne : <b>" . $reponse . "</b><br>";
+
 
 // ferme la connexion à MySQL :
 unset($dao);
