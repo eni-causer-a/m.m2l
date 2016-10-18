@@ -1,58 +1,84 @@
 <?php
-	// Projet Réservations M2L - version web mobile
-	// fichier : vues/VueDemanderMdp.php
-	// Rôle : visualiser la demande de création d'un nouvel utilisateur
-	// cette vue est appelée par le contôleur controleurs/CtrlDemanderMdp.php
-	// Création : 12/10/2015 par JM CARTRON
-	// Mise à jour : 2/6/2016 par JM CARTRON
-?>
-<!doctype html>
-<html>
-	<head>
-		<?php include_once ('vues/head.php'); ?>
-		
-		<script>
-			// associe une fonction à l'événement pageinit
-			$(document).bind('pageinit', function() {
-				<?php if ($typeMessage != '') { ?>
-					// affiche la boîte de dialogue 'affichage_message' 
-					$.mobile.changePage('#affichage_message', {transition: "<?php echo $transition; ?>"});
-				<?php } ?>
-			} );
-		</script>
-	</head>
-	
-	<body>
-		<div data-role="page" id="page_principale">
-			<div data-role="header" data-theme="<?php echo $themeNormal; ?>">
-				<h4>M2L-GRR</h4>
-				<a href="index.php?action=Menu" data-transition="<?php echo $transition; ?>">Retour menu</a>
-			</div>
-			
-			<div data-role="content">
-				<h4 style="text-align: center; margin-top: 0px; margin-bottom: 0px;">Confirmer une réservation</h4>
-				<form action="index.php?action=ConfirmerRes" method="post" data-ajax="false">
-					<div data-role="fieldcontain" class="ui-hide-label">
-						<input type="text" name="txtName" id="txtName" required placeholder="Confirmez une réservation" value="<?php echo $name; ?>">
-					</div>
-					<div data-role="fieldcontain">
-						<input type="submit" name="btnDemanderMdp" id="btnDemanderMdp" value="M'envoyer un nouveau mot de passe" data-mini="true">
-					</div>
-				</form>
+// Projet Réservations M2L - version web mobile
+// fichier : controleurs/CtrlDemanderMdp.php
+// Rôle : traiter la demande de création d'un nouvel utilisateur
+// Création : 21/10/2015 par JM CARTRON
+// Mise à jour : 2/6/2016 par JM CARTRON
 
-				<?php if($debug == true) {
-					// en mise au point, on peut afficher certaines variables dans la page
-					echo "<p>name = " . $name . "</p>";
-				} ?>
-				
-			</div>
+if ( ! isset ($_POST ["txtRes"]))
+{
+	// si les données n'ont pas été postées, c'est le premier appel du formulaire : affichage de la vue sans message d'erreur
+	$Res = '';
+	$message = '';
+	$typeMessage = '';			// 2 valeurs possibles : 'information' ou 'avertissement'
+	$themeFooter = $themeNormal;
+	include_once ('vues/VueConfirmerReservation.php');
+}
+else 
+{
+	// récupération des données postées
+	if ( empty ($_POST ["txtRes"]) == true)  $Res = "";  else   $Res = $_POST ["txtRes"];
+	
+	// inclusion de la classe Outils pour utiliser les méthodes statiques estUneAdrMailValide et creerMdp
+	include_once ('modele/Outils.class.php');
+}
+	
+if ($Res == '') 
+{
+		// si les données sont incorrectes ou incomplètes, réaffichage de la vue de suppression avec un message explicatif
+		$message = 'Données incomplètes ou incorrectes !';
+		$typeMessage = 'avertissement';
+		$themeFooter = $themeProbleme;
+		include_once ('vues/VueConfirmerReservation.php');
+}
+else 
+{
+		// connexion du serveur web à la base MySQL
+		include_once ('modele/DAO.class.php');
+		$dao = new DAO();
 			
-			<div data-role="footer" data-position="fixed" data-theme="<?php echo $themeNormal; ?>">
-				<h4>Suivi des réservations de salles<br>Maison des ligues de Lorraine (M2L)</h4>
-			</div>
-		</div>
+		if ( $dao->existeReservation($Res) == false)
+		{
+			// si le nom n'existe pas, réaffichage de la vue
+			$message = "LA Réservation n'existe pas !";
+			$typeMessage = 'avertissement';
+			$themeFooter = $themeProbleme;
+			include_once ('vues/VueConfirmerReservation.php');
+		}
+		if ( $dao->estLeCreateur($_SESSION['nom'],$Res) == false) 
+		{
+			// si le nom n'existe pas, réaffichage de la vue
+			$message = "Vous n'ête pas le créateur de cette réservation !";
+			$typeMessage = 'avertissement';
+			$themeFooter = $themeProbleme;
+			include_once ('vues/VueConfirmerReservation.php');
+		}
 		
-		<?php include_once ('vues/dialog_message.php'); ?>
+		$uneReservation=$dao->getReservation($Res);
 		
-	</body>
-</html>
+		if($uneReservation->$unStatus == 0)
+		{
+			$message = "La réservation est déja confirmé";
+			$typeMessage = 'avertissement';
+			$themeFooter = $themeProbleme;
+			include_once ('vues/VueConfirmerReservation.php');
+		}
+		if($uneReservation->$unStartTime < time())
+		{
+			$message = "La réservation est déja passé";
+			$typeMessage = 'avertissement';
+			$themeFooter = $themeProbleme;
+			include_once ('vues/VueConfirmerReservation.php');
+		}
+		
+		$Utilisateur = $dao->getUtilisateur($_SESSION['nom']);
+		include_once ('modele/Outils.class.php');
+		$Outils = New Outils();
+		$sujet = "Confirmez Réservation";
+		$messagemail = "Votre confirmation à été prise en compte";
+		$EnvoyerMail = $Outils->envoyerMail($resultat->email, $sujet, $messagemail, $adresseEmetteur)
+		
+//Envoie Mail (Outils.class) les messages ,  Voir avec Getutilisateur pour choper les infos nécessaire
+//pas confondre le message de la page et celui du mail
+		
+}
