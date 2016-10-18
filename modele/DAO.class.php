@@ -87,6 +87,17 @@ class DAO
 		$ok = $req->execute();
 		return $ok;
 	}
+	
+	public function aPasseDesReservations($nom )
+		{
+				$txt_req= "SELECT * FROM mrbs_users,mrbs_entry where mrbs_users.name =:nom and create_by=:nom";
+				$req = $this->cnx->prepare($txt_req);
+				$req = $this->cnx->prepare($txt_req);
+				// liaison de la requête et de ses paramètres
+				$req->bindValue("nom", $nom, PDO::PARAM_STR);
+				$ok = $req->execute();
+				return $ok;
+			}
 
 	// mise à jour de la table mrbs_entry_digicode (si besoin) pour créer les digicodes manquants
 	// cette fonction peut dépanner en cas d'absence des triggers chargés de créer les digicodes
@@ -118,6 +129,79 @@ class DAO
 		$req1->closeCursor();
 		return;
 	}
+	
+	public function supprimerUtilisateur($nom)
+	{	// préparation de la requete de suppression
+		$ok = $this->getUtilisateur($nom);
+	
+		if ($ok){
+			$txt_req = "DELETE FROM mrbs_users WHERE name = :nom";
+			$req = $this->cnx->prepare($txt_req);
+			// liaison de la requête et de son paramètre
+			$req->bindValue("nom", $nom, PDO::PARAM_STR);
+			// exécution de la requete
+			$ok = $req->execute();
+			
+		}
+	return $ok;
+	}
+	
+	public function getLesSalles()
+		{	// préparation de la requete de recherche
+				$txt_req = "SELECT mrbs_room.id,mrbs_room.room_name,mrbs_room.capacity,mrbs_area.area_name";
+				$txt_req = $txt_req . " FROM mrbs_room,mrbs_area,mrbs_entry";
+				$txt_req = $txt_req . " WHERE mrbs_room.area_id = mrbs_area.id";
+				$txt_req = $txt_req . " AND mrbs_room.id NOT IN (SELECT id FROM mrbs_entry)";
+				$txt_req = $txt_req . " GROUP BY mrbs_room.id;";
+		
+				$req = $this->cnx->query($txt_req);
+				// liaison de la requête et de ses paramètres
+				// extraction des données
+				$req->execute();
+				$uneLigne = $req->fetch(PDO::FETCH_OBJ);
+		
+				// construction d'une collection d'objets Reservation
+				$lesSalles = array();
+				// tant qu'une ligne est trouvée :
+				while ($uneLigne)
+					{	// création d'un objet Reservation
+							$unId = utf8_encode($uneLigne->id);
+							$unRoomName = utf8_encode($uneLigne->room_name);
+							$unCapacity = utf8_encode($uneLigne->capacity);
+							$unAreaName = utf8_encode($uneLigne->area_name);
+				
+							$uneSalle = new Salle($unId,$unRoomName, $unCapacity, $unAreaName);
+				 		// ajout de la réservation à la collection
+							$lesSalles[] = $uneSalle;
+							// extrait la ligne suivante
+							$uneLigne = $req->fetch(PDO::FETCH_OBJ);
+						}
+				// libère les ressources du jeu de données
+				$req->closeCursor();
+				// fourniture de la collection
+				return $lesSalles;
+			}
+			
+	public function confirmerReservation($id){
+				$txt_req = "select status from mrbs_entry where id = :id";
+				$req = $this->cnx->prepare($txt_req);
+				$req->bindValue("id", $id, PDO::PARAM_INT);
+				$statut = $req->execute();
+				$statut = $req->fetchColumn(0);
+				$ok = false;
+				if ($statut == 4){
+					//preparation
+					$txt_req = "update mrbs_entry set status = 0 where id = :id";
+					$req = $this->cnx->prepare($txt_req);
+					// liaison de la requête et de ses paramètres
+					$req->bindValue("id", $id, PDO::PARAM_INT);
+					$ok = $req->execute();
+						
+				}
+			
+			
+				return $ok;
+			}
 	
 	/*
 	 // mise à jour de la table mrbs_entry_digicode (si besoin) pour créer les digicodes manquants
@@ -170,6 +254,26 @@ class DAO
 		// exécution de la requete
 		$ok = $req->execute();
 		return $ok;
+	}
+	
+	public function estLeCreateur($nomUser,$idReservation)
+		{	// préparation de la requete de recherche
+		$txt_req = "Select count(*) from mrbs_entry where create_by = :nomUser AND id = :idReservation";
+		$req = $this->cnx->prepare($txt_req);
+		// liaison de la requête et de ses paramètres
+		$req->bindValue("nomUser", $nomUser, PDO::PARAM_STR);
+		$req->bindValue("idReservation", $idReservation, PDO::PARAM_STR);
+		// exécution de la requete
+		$req->execute();
+		$nbReponses = $req->fetchColumn(0);
+		// libère les ressources du jeu de données
+		$req->closeCursor();
+		
+		// fourniture de la réponse
+		if ($nbReponses == 0)
+			return false;
+			else
+				return true;
 	}
 
 	// fournit true si l'utilisateur ($nomUser) existe, false sinon
