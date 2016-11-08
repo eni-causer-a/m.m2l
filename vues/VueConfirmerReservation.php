@@ -1,27 +1,22 @@
-<?php
-	// Projet Réservations M2L - version web mobile
-	// fichier : vues/VueDemanderMdp.php
-	// Rôle : visualiser la demande de création d'un nouvel utilisateur
-	// cette vue est appelée par le contôleur controleurs/CtrlDemanderMdp.php
-	// Création : 12/10/2015 par JM CARTRON
-	// Mise à jour : 2/6/2016 par JM CARTRON
-?>
 <!doctype html>
 <html>
 	<head>
 		<?php include_once ('vues/head.php'); ?>
 		
 		<script>
-			// associe une fonction à l'événement pageinit
-			$(document).bind('pageinit', function() {
-				<?php if ($typeMessage != '') { ?>
-					// affiche la boîte de dialogue 'affichage_message' 
-					$.mobile.changePage('#affichage_message', {transition: "<?php echo $transition; ?>"});
-				<?php } ?>
-			} );
+		// version jQuery activée
+		
+		// associe une fonction à l'événement pageinit
+		$(document).bind('pageinit', function() {
+		
+			
+			<?php if ($typeMessage != '') { ?>
+				// affiche la boîte de dialogue 'affichage_message'
+				$.mobile.changePage('#affichage_message', {transition: "<?php echo $transition; ?>"});
+			<?php } ?>
+		} );
 		</script>
 	</head>
-	
 	<body>
 		<div data-role="page" id="page_principale">
 			<div data-role="header" data-theme="<?php echo $themeNormal; ?>">
@@ -31,18 +26,22 @@
 			
 			<div data-role="content">
 				<h4 style="text-align: center; margin-top: 0px; margin-bottom: 0px;">Confirmer une réservation</h4>
-				<form action="index.php?action=ConfirmerRes" method="post" data-ajax="false">
-					<div data-role="fieldcontain" class="ui-hide-label">
-						<input type="text" name="txtRes" id="txtRes" required placeholder="Confirmez une réservation" value="<?php echo $Res; ?>">
-					</div>
+				<form action="index.php?action=ConfirmerReservation" method="post" data-ajax="false">
 					<div data-role="fieldcontain">
-						<input type="submit" name="btnDemanderMdp" id="btnDemanderMdp" value="M'envoyer un nouveau mot de passe" data-mini="true">
+						<label for="txtConfirmerReservation">Numéro de la réservation : </label>
+						<input type="text" name="numReservation" id="numReservation" placeholder="Entrez le numero de reservation" required value="<?php echo $idReservation; ?>">
+					</div>
+				
+					<div data-role="fieldcontain">
+						<input type="submit" name="btnConfirmerReservation" id="btnConfirmerReservation" value="Valider la reservation" data-mini="true">
 					</div>
 				</form>
 
 				<?php if($debug == true) {
 					// en mise au point, on peut afficher certaines variables dans la page
-					echo "<p>name = " . $Res . "</p>";
+					echo "<p>name = " . $name . "</p>";
+					echo "<p>adrMail = " . $adrMail . "</p>";
+					echo "<p>level = " . $level . "</p>";
 				} ?>
 				
 			</div>
@@ -55,4 +54,4 @@
 		<?php include_once ('vues/dialog_message.php'); ?>
 		
 	</body>
-</html>>
+</html>
