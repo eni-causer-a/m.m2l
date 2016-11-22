@@ -536,7 +536,7 @@ class DAO
 		$req = $this->cnx->prepare($txt_req);
 		// liaison de la requête et de ses paramètres
 		$req->bindValue("nomUtilisateur", $nomUtilisateur, PDO::PARAM_STR);
-		$req->bindValue("mdpUtilisateur", $mdpUtilisateur, PDO::PARAM_STR);
+		$req->bindValue("mdpUtilisateur", md5($mdpUtilisateur), PDO::PARAM_STR);
 				// extraction des données
 		$req->execute();		
 		
