@@ -79,7 +79,7 @@ if ( $nomAdmin == "" || $mdpAdmin == "" || $name == "" ) {
 					}
 					else {
 						// tout a bien fonctionné
-						$msg = ; un mail va être envoyé à l'utilisateur.";
+						$msg = " un mail va être envoyé à l'utilisateur.";
 					}
 				}
 			}
