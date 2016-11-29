@@ -27,7 +27,7 @@ if ( empty ($_GET ["name"]) == true)  $name = "";  else   $name = $_GET ["name"]
 
 // si l'URL ne contient pas les données, on regarde si elles ont été envoyées par la méthode POST
 // la fonction $_POST récupère une donnée envoyées par la méthode POST
-if ( $nomAdmin == "" && $mdpAdmin == ""  && name =="") {
+if ( $nomAdmin == "" && $mdpAdmin == ""  && $name =="") {
 	if ( empty ($_POST ["nomAdmin"]) == true)  $nomAdmin = "";  else   $nomAdmin = $_POST ["nomAdmin"];
 	if ( empty ($_POST ["mdpAdmin"]) == true)  $mdpAdmin = "";  else   $mdpAdmin = $_POST ["mdpAdmin"];
 	if ( empty ($_POST ["name"]) == true)  $name = "";  else   $name = $_POST ["name"];
@@ -54,40 +54,40 @@ if ( $nomAdmin == "" || $mdpAdmin == "" || $name == "" ) {
 			else {
 				if ($dao->aPasseDesReservations($name))
 				{
-					$msg = "Erreur l'utilisateur à passé des réservations";
-				}
 					
-	
-				$ok = $dao->supprimerUtilisateur($unUtilisateur);
-				if ( ! $ok ) {
-					$msg = "Erreur : problème lors de la suppression du nouveau utilisateur.";
+					$msg = "Erreur l'utilisateur à passé des réservations"+$dao->aPasseDesReservations($name);
 				}
-				else { // En cours
-					$msg = 
-					// envoi d'un mail de confirmation de l'enregistrement
-					$sujet = "Création de votre compte dans le système de réservation de M2L";
-					$contenuMail = "L'administrateur du système de réservations de la M2L vient de vous créer un compte utilisateur.\n\n";
-					$contenuMail .= "Les données enregistrées sont :\n\n";
-					$contenuMail .= "Votre nom : " . $name . "\n";
-					$contenuMail .= "Votre mot de passe : " . $password . " (nous vous conseillons de le changer lors de la première connexion)\n";
-					$contenuMail .= "Votre niveau d'accès (0 : invité    1 : utilisateur    2 : administrateur) : " . $level . "\n";
+				else
+				{
+					$ok = $dao->supprimerUtilisateur($name);
 					
-					$ok = Outils::envoyerMail($email, $sujet, $contenuMail, $ADR_MAIL_EMETTEUR);
 					if ( ! $ok ) {
+					$msg = 'Erreur : problème lors de la suppression du nouveau utilisateur.';
+					}
+					else { 
+						
+						// envoi d'un mail de confirmation de la suppresion
+						$sujet = "suppression d'un utilisateur";
+						$contenuMail = "L'administrateur du système de réservation de la M2L vient de supprimer le compte de " . $name . "\n\n";
+	
+						
+						$ok = Outils::envoyerMail($email, $sujet, $contenuMail, $ADR_MAIL_EMETTEUR);
+						
+						if ( ! $ok ){				
 						// l'envoi de mail a échoué
 						$msg = "Enregistrement effectué ; l'envoi du mail à l'utilisateur a rencontré un problème.";
-					}
-					else {
-						// tout a bien fonctionné
-						$msg = ; un mail va être envoyé à l'utilisateur.";
+						}
+						else {
+							// tout a bien fonctionné
+						$msg = "un mail va être envoyé à l'utilisateur.";
+						}
 					}
 				}
-			}
 		}
 		// ferme la connexion à MySQL :
 		unset($dao);
 	}
-
+	}
 
 // création du flux XML en sortie
 creerFluxXML ($msg);
