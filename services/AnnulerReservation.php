@@ -44,7 +44,7 @@ if ($nomUser == "" && $mdpUser == "" && $idReservation == "") {
 	else
 		$idReservation = $_POST ["idReservation"];
 }
-// Contrôle de la présence des paramètres
+// Contrôle de la présence des paramètres.
 if ($nomUser == "" || $mdpUser == "" || $idReservation == "") {
 	$msg = "Erreur : données incomplètes ou incorrectes.";
 } else {
